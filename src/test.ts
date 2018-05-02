@@ -1,5 +1,5 @@
-import { LiveChat } from ".";
 import { ILiveChatMsg } from "./definitions";
+import { LiveChat } from "./LiveChat";
 
 const config = {
     liveChatID: process.env.LIVE_CHAT_ID || "",

@@ -14,7 +14,7 @@ export class LiveChat extends EventEmitter {
 
     constructor(public config: IConfig) { super(); }
 
-    public connect() {
+    public connect(): this {
         // tslint:disable-next-line
         const { accessToken: access_token, clientID, clientSecret, refreshToken: refresh_token } = this.config.oauth;
         this.auth = new OAuth2(clientID, clientSecret);
@@ -23,22 +23,25 @@ export class LiveChat extends EventEmitter {
         this.connected = true;
         this.emit("connected");
         this.poll();
+        return this;
     }
 
-    public disconnect() {
+    public disconnect(): this {
         clearTimeout(this.pollTimeout);
         this.pollTimeout = null;
         this.connected = false;
         this.emit("disconnected");
+        return this;
     }
 
-    public reconnect() {
+    public reconnect(): this {
         this.disconnect();
         this.connect();
         this.emit("reconnected");
+        return this;
     }
 
-    public say(message: string) {
+    public say(message: string): this {
         YouTube.liveChatMessages.insert({
             auth: this.auth,
             part: "snippet",
@@ -52,14 +55,16 @@ export class LiveChat extends EventEmitter {
                 },
             },
         }).catch((err: any) => this.emit("error", err));
+        return this;
     }
 
-    public delete(msgID: string) {
+    public delete(msgID: string): this {
         YouTube.liveChatMessages.delete({ auth: this.auth, id: msgID })
             .catch((err: any) => this.emit("error", err));
+        return this;
     }
 
-    private poll() {
+    private poll(): this {
         this.emit("polling");
         YouTube.liveChatMessages.list({
             auth: this.auth,
@@ -86,9 +91,10 @@ export class LiveChat extends EventEmitter {
                 }
                 this.parse.bind(this, undefined)();
             });
+        return this;
     }
 
-    private parse(resp: any) {
+    private parse(resp: any): this {
         if (this.knownMsgs.length > 0) {
             resp.data.items.forEach((item: any) => {
                 if (this.knownMsgs.indexOf(item.id) === -1 && item.snippet.type === "textMessageEvent") {
@@ -123,9 +129,10 @@ export class LiveChat extends EventEmitter {
         }
 
         this.pollTimeout = setTimeout(this.poll.bind(this), interval);
+        return this;
     }
 
-    private refreshAuth() {
+    private refreshAuth(): this {
         this.emit("refreshing");
         this.auth.refreshAccessToken((error: any, token: string) => {
             if (error) {
@@ -134,5 +141,6 @@ export class LiveChat extends EventEmitter {
             this.config.oauth.refreshToken = token;
             this.emit("auth_refreshed");
         });
+        return this;
     }
 }

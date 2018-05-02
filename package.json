@@ -1,8 +1,8 @@
 {
   "name": "yt-livechat",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Lib for interact with YouTube live chats",
-  "main": "build/index.js",
+  "main": "./build/index",
   "scripts": {
     "build": "./node_modules/.bin/tsc -p .",
     "lint": "./node_modules/.bin/tslint --fix -o lint_errors.log -p .",
