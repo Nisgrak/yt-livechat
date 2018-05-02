@@ -1,0 +1,36 @@
+{
+  "name": "yt-livechat",
+  "version": "1.0.0",
+  "description": "Lib for interact with YouTube live chats",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc -p .",
+    "lint": "./node_modules/.bin/tslint --fix -o lint_errors.log -p .",
+    "start": "node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siffreinsg/yt-livechat.git"
+  },
+  "keywords": [
+    "live",
+    "chat",
+    "bot",
+    "youtube",
+    "streaming"
+  ],
+  "author": "Siffrein Sigy <siffr.hdesigy@gmail.com> (https://github.com/siffreinsg)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/siffreinsg/yt-livechat/issues"
+  },
+  "homepage": "https://github.com/siffreinsg/yt-livechat#readme",
+  "devDependencies": {
+    "@types/node": "9.6.7",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "googleapis": "^29.0.0"
+  }
+}
