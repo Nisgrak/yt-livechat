@@ -1,6 +1,6 @@
 # YouTube LiveChat
 
-Event-based library for interact with any YouTube Live Chat.
+Event-based library to interact with any YouTube Live Chat.
 
 ## Installation
 

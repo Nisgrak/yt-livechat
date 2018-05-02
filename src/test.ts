@@ -1,5 +1,4 @@
-import { ILiveChatMsg } from "./definitions";
-import { LiveChat } from "./LiveChat";
+import { LiveChat, LiveChatMsg } from "./";
 
 const config = {
     liveChatID: process.env.LIVE_CHAT_ID || "",
@@ -30,7 +29,7 @@ chat.on("error", (error) => {
     }
 });
 
-chat.on("chat", (message: ILiveChatMsg) => {
+chat.on("chat", (message: LiveChatMsg) => {
     console.log(`Nouveau message de ${message.author.name}: ${message.content}`);
 
     switch (message.content) {
