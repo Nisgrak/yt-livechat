@@ -55,7 +55,7 @@ export class LiveChat extends EventEmitter {
     }
 
     public delete(msgID: string) {
-        return YouTube.liveChatMessages.delete({ auth: this.auth, id: msgID })
+        YouTube.liveChatMessages.delete({ auth: this.auth, id: msgID })
             .catch((err: any) => this.emit("error", err));
     }
 
