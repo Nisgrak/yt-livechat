@@ -1,4 +1,4 @@
-import { LiveChat, LiveChatMsg } from "./";
+import { LiveChat, LiveChatMsg } from ".";
 
 const config = {
     liveChatID: process.env.LIVE_CHAT_ID || "",
@@ -14,7 +14,8 @@ const chat: LiveChat = new LiveChat(config);
 
 chat.on("connected", () => console.log("Connected to the YouTube API."));
 chat.on("polling", () => console.log("Polling new messages."));
-chat.on("auth_refreshed", () => console.log("Access token refreshed."));
+// tslint:disable-next-line
+chat.on("token_refreshed", (tokens: any) => console.log(`Access token refreshed. The new one is ${tokens.access_token} and expire at ${tokens.expiry_date}.`));
 chat.on("refreshing", () => console.log("Refreshing access token..."));
 chat.on("error", (error) => {
     if (error && error.errors[0]) {
