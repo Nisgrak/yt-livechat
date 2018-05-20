@@ -1,4 +1,4 @@
-import { LiveChat, LiveChatMsg } from ".";
+import { LiveChat } from ".";
 
 const config = {
     liveChatID: process.env.LIVE_CHAT_ID || "",
@@ -10,12 +10,13 @@ const config = {
 };
 
 console.log("Config from .env file:\n" + JSON.stringify(config, null, 4));
-const chat: LiveChat = new LiveChat(config);
+const chat = new LiveChat(config);
 
 chat.on("connected", () => console.log("Connected to the YouTube API."));
 chat.on("polling", () => console.log("Polling new messages."));
-// tslint:disable-next-line
-chat.on("token_refreshed", (tokens: any) => console.log(`Access token refreshed. The new one is ${tokens.access_token} and expire at ${tokens.expiry_date}.`));
+chat.on("token_refreshed", (tokens: any) => {
+    console.log(`Access token refreshed. The new one is ${tokens.access_token} and expire at ${tokens.expiry_date}.`);
+});
 chat.on("refreshing", () => console.log("Refreshing access token..."));
 chat.on("error", (error) => {
     if (error && error.errors[0]) {
@@ -30,10 +31,10 @@ chat.on("error", (error) => {
     }
 });
 
-chat.on("chat", (message: LiveChatMsg) => {
-    console.log(`Nouveau message de ${message.author.name}: ${message.content}`);
+chat.on("chat", (message: any) => {
+    console.log(`Nouveau message de ${message.authorDetails.displayName}: ${message.snippet.displayMessage}`);
 
-    switch (message.content) {
+    switch (message.snippet.displayMessage) {
         case "/sayhello":
             chat.say("I'm not your slave. I'm free. I have no master. I'm gonna conquer the world. Fear me.");
             break;
@@ -42,6 +43,7 @@ chat.on("chat", (message: LiveChatMsg) => {
             chat.delete(message.id);
             break;
     }
+
 });
 
 chat.connect();

@@ -10,19 +10,3 @@ export interface OauthConfig {
     refreshToken: string;
     expiryDate?: string;
 }
-export interface LiveChatMsg {
-    author: LiveChatAuthor;
-    content: string;
-    id: string;
-    liveChatId: string;
-    publishedAt: string;
-}
-export interface LiveChatAuthor {
-    channelId: string;
-    isChatModerator: boolean;
-    isChatOwner: boolean;
-    isChatSponsor: boolean;
-    isVerified: boolean;
-    name: string;
-    profileImageUrl: string;
-}

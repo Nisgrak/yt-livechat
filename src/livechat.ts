@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
-import { google } from "googleapis";
-import { Config, LiveChatMsg } from ".";
+import { google, youtube_v3 } from "googleapis";
+import { Config } from ".";
 
 const OAuth2 = google.auth.OAuth2;
 const YouTube = google.youtube("v3");
@@ -55,7 +55,7 @@ export class LiveChat extends EventEmitter {
         YouTube.liveChatMessages.insert({
             auth: this.auth,
             part: "snippet",
-            resource: {
+            requestBody: {
                 snippet: {
                     liveChatId: this.config.liveChatID,
                     textMessageDetails: {
@@ -64,13 +64,23 @@ export class LiveChat extends EventEmitter {
                     type: "textMessageEvent",
                 },
             },
-        }).catch((err: any) => this.emit("error", err));
+        }, (err: Error | null) => {
+            if (err) {
+                this.emit("error", err);
+            }
+        });
         return this;
     }
 
     public delete(messageID: string): this {
-        YouTube.liveChatMessages.delete({ auth: this.auth, id: messageID })
-            .catch((err: any) => this.emit("error", err));
+        YouTube.liveChatMessages.delete({
+            auth: this.auth,
+            id: messageID,
+        }, (err: Error | null) => {
+            if (err) {
+                this.emit("error", err);
+            }
+        });
         return this;
     }
 
@@ -82,9 +92,11 @@ export class LiveChat extends EventEmitter {
             maxResults: 2000,
             pageToken: this.pageToken,
             part: "snippet, authorDetails",
-        })
-            .then((resp) => this.parse.bind(this, resp)())
-            .catch((err) => {
+        }).then((resp) => this.parse.bind(this, resp)())
+            .catch((err: any) => {
+                if (!err.errors || !err.errors[0]) {
+                    return this.emit("error", err);
+                }
                 const reason = err.errors[0].reason;
 
                 switch (reason) {
@@ -96,40 +108,25 @@ export class LiveChat extends EventEmitter {
                     case "liveChatEnded":
                     case "liveChatNotFound":
                     case "rateLimitExceeded":
+                    case "quotaExceeded":
                     default:
                         return this.emit("error", err);
                 }
-                this.parse.bind(this, undefined)();
+                return this.parse.bind(this, undefined)();
             });
         return this;
     }
 
     private parse(resp: any): this {
         if (this.knownMsgs.length > 0) {
-            resp.data.items.forEach((item: any) => {
-                if (this.knownMsgs.indexOf(item.id) === -1 && item.snippet.type === "textMessageEvent") {
-                    const msg: LiveChatMsg = {
-                        author: {
-                            channelId: item.snippet.authorChannelId,
-                            isChatModerator: item.authorDetails.isChatModerator,
-                            isChatOwner: item.authorDetails.isChatOwner,
-                            isChatSponsor: item.authorDetails.isChatSponsor,
-                            isVerified: item.authorDetails.isVerified,
-                            name: item.authorDetails.displayName,
-                            profileImageUrl: item.authorDetails.profileImageUrl,
-                        },
-                        content: item.snippet.displayMessage,
-                        id: item.id,
-                        liveChatId: item.snippet.liveChatId,
-                        publishedAt: item.snippet.publishedAt,
-                    };
-
-                    this.knownMsgs.push(msg.id);
-                    this.emit("chat", msg);
+            resp.data.items.forEach((item: youtube_v3.Schema$LiveChatMessage) => {
+                if (this.knownMsgs.indexOf("" + item.id) === -1 && item.snippet && item.snippet.type === "textMessageEvent") { // tslint:disable
+                    this.knownMsgs.push("" + item.id);
+                    this.emit("chat", item);
                 }
             });
         } else {
-            this.knownMsgs = resp.data.items.map((msg: any) => msg.id);
+            this.knownMsgs = resp.data.items.map((msg: youtube_v3.Schema$LiveChatMessage) => msg.id);
         }
 
         const interval = !resp ? 10000 : Math.max(this.config.interval || 1, resp.pollingIntervalMillis);
