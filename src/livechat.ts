@@ -4,7 +4,7 @@ import { Config, LiveChatMessage } from "./definitions";
 
 export class LiveChat extends EventEmitter {
     public connected: boolean = false;
-    private auth: OAuth2Client;
+    public auth: OAuth2Client;
     private pollTimeout: any;
     private pageToken: string = "";
     private knownMsgs: string[] = [];
@@ -69,7 +69,7 @@ export class LiveChat extends EventEmitter {
                 part: "snippet",
             },
             url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-        }).catch(this.error);
+        }).catch((err) => this.error.bind(this, err)());
         return this;
     }
 
@@ -84,7 +84,7 @@ export class LiveChat extends EventEmitter {
                 id: messageId,
             },
             url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-        }).catch(this.error);
+        }).catch((err) => this.error.bind(this, err)());
         return this;
     }
 
@@ -124,7 +124,7 @@ export class LiveChat extends EventEmitter {
         }).then((res) => {
             this.parse.bind(this, res)();
         }).catch((err) => {
-            this.error(err);
+            this.error.bind(this, err)();
             this.parse.bind(this, undefined)();
         });
         return this;
@@ -135,7 +135,7 @@ export class LiveChat extends EventEmitter {
      * @param resp Response of the poll request
      */
     private parse(resp: any): this {
-        if (resp.data && resp.data.items) {
+        if (resp && resp.data && resp.data.items) {
             if (this.knownMsgs.length > 0) {
                 resp.data.items.forEach((item: any) => {
                     if (this.knownMsgs.indexOf(item.id) === -1 && item.snippet.type === "textMessageEvent") {
