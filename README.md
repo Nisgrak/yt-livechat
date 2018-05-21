@@ -223,7 +223,7 @@ chat.on('error', (error) => {
 })
 ```
 Let's take a look at the result:
-```json
+```javascript
 [
     {
         domain: 'youtube.liveChat',
