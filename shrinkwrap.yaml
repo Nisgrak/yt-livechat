@@ -1,15 +1,15 @@
 dependencies:
-  googleapis: 30.0.0
+  google-auth-library: 1.5.0
 devDependencies:
-  '@types/node': 10.1.1
+  '@types/node': 10.1.2
   dotenv: 5.0.1
   tslint: 5.10.0
   typescript: 2.8.3
 packages:
-  /@types/node/10.1.1:
+  /@types/node/10.1.2:
     dev: true
     resolution:
-      integrity: sha512-n7wxy8r2tjVcrzZoKJlyZmi1C1VhXGHAGhDEO1iqp7fbsTSsDF3dVA50KFsPg77EXqzNJqbzcna8Mi4m7a1lyw==
+      integrity: sha512-bjk1RIeZBCe/WukrFToIVegOf91Pebr8cXYBwLBIsfiGWVQ+ifwWsT59H3RxrWzWrzd1l/Amk1/ioY5Fq3/bpA==
   /ansi-regex/2.1.1:
     dev: true
     engines:
@@ -38,7 +38,7 @@ packages:
       integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==
   /axios/0.18.0:
     dependencies:
-      follow-redirects: 1.4.1
+      follow-redirects: 1.5.0
       is-buffer: 1.1.6
     dev: false
     resolution:
@@ -158,14 +158,14 @@ packages:
     dev: false
     resolution:
       integrity: sha1-p1Xqe8Gt/MWjHOfnYtuq3F5jZEQ=
-  /follow-redirects/1.4.1:
+  /follow-redirects/1.5.0:
     dependencies:
       debug: 3.1.0
     dev: false
     engines:
       node: '>=4.0'
     resolution:
-      integrity: sha512-uxYePVPogtya1ktGnAAXOacnbIuRMB4dkvqeNz2qTtTQsuzSfbDolV+wMMKxAmCx0bLgAKLbBOkjItMbbkR1vg==
+      integrity: sha512-fdrt472/9qQ6Kgjvb935ig6vJCuofpBUD14f9Vb+SLlm7xIe4Qva5gey8EKtv8lp7ahE1wilg3xL1znpVGtZIA==
   /fs.realpath/1.0.0:
     dev: true
     resolution:
@@ -212,18 +212,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+EuKr4CLlGsnXx4XIJIVkcKYrsa2xkAmCvxRhX2HsazJzUBAJ35wARGeApHUn4nNfPD03Vl057FskNr20VaCyg==
-  /googleapis/30.0.0:
-    dependencies:
-      google-auth-library: 1.5.0
-      pify: 3.0.0
-      qs: 6.5.2
-      url-template: 2.0.8
-      uuid: 3.2.1
-    dev: false
-    engines:
-      node: '>=4.0'
-    resolution:
-      integrity: sha512-fO2wlZuuIHbyL8VSWlAcCndC9B3SvW/Q9yApB6cf8DyJ+ljNKl+q5rHU6nnInUWR5ix4MBHeXcHaI/PB8FaTsw==
   /gtoken/2.3.0:
     dependencies:
       axios: 0.18.0
@@ -346,12 +334,6 @@ packages:
     dev: false
     resolution:
       integrity: sha1-8FKijacOYYkX7wqKw0wa5aaChrM=
-  /qs/6.5.2:
-    dev: false
-    engines:
-      node: '>=0.6'
-    resolution:
-      integrity: sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
   /resolve/1.7.1:
     dependencies:
       path-parse: 1.0.5
@@ -440,14 +422,6 @@ packages:
       node: '>=4.2.0'
     resolution:
       integrity: sha512-K7g15Bb6Ra4lKf7Iq2l/I5/En+hLIHmxWZGq3D4DIRNFxMNV6j2SHSvDOqs2tGd4UvD/fJvrwopzQXjLrT7Itw==
-  /url-template/2.0.8:
-    dev: false
-    resolution:
-      integrity: sha1-/FZaPMy/93MMd19WQflVV5FDnyE=
-  /uuid/3.2.1:
-    dev: false
-    resolution:
-      integrity: sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
   /wrappy/1.0.2:
     dev: true
     resolution:
@@ -460,8 +434,8 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 6
 shrinkwrapVersion: 3
 specifiers:
-  '@types/node': latest
+  '@types/node': ^10.1.2
   dotenv: ^5.0.1
-  googleapis: latest
+  google-auth-library: ^1.5.0
   tslint: ^5.9.1
   typescript: ^2.8.3

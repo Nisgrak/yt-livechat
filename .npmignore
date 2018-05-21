@@ -6,3 +6,4 @@ tsconfig.json
 .env
 .vscode
 shrinkwrap.yaml
+build/test.js
