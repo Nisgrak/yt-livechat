@@ -1,6 +1,8 @@
 import { LiveChat } from ".";
+import { LiveChatMessage } from "./definitions";
 
 const config = {
+    interval: 10000,
     liveChatID: process.env.LIVE_CHAT_ID || "",
     oauth: {
         client_id: process.env.CLIENT_ID || "",
@@ -13,13 +15,8 @@ console.log("Config from .env file:\n" + JSON.stringify(config, null, 4));
 const chat = new LiveChat(config);
 
 chat.on("connected", () => console.log("Connected to the YouTube API."));
-
 chat.on("polling", () => console.log("Polling new messages."));
-
-chat.on("tokens", (tokens: any) => {
-    console.log(tokens);
-    console.log(`Access token refreshed. The new one is ${tokens.access_token} and expire at ${tokens.expiry_date}.`);
-});
+chat.on("tokens", () => console.log(`Access token refreshed.`));
 
 chat.on("error", (error) => {
     if (error && error.errors && error.errors[0]) {
@@ -27,29 +24,33 @@ chat.on("error", (error) => {
 
         switch (reason) {
             case "forbidden":
-                if (error.config.url === "https://www.googleapis.com/youtube/v3/liveChat/messages") {
-                    // return chat.say("Sorry, I'm not able to do that :/");
-                }
+                break;
+            default:
+                console.log(error);
         }
     } else {
         console.log(error);
     }
 });
 
-/* chat.on("chat", (message: any) => {
+chat.on("chat", (message: LiveChatMessage) => {
     console.log(`Nouveau message de ${message.authorDetails.displayName}: ${message.snippet.displayMessage}`);
 
     switch (message.snippet.displayMessage) {
         case "/sayhello":
-            chat.say("I'm not your slave. I'm free. I have no master. I'm gonna conquer the world. Fear me.");
+            chat.say("I'm not your slave, I'm free. I don't have any master. I'm gonna conquer this world. Fear me!!!");
             break;
         case "/deleteme":
-            chat.say("Okay 👌");
-            chat.delete(message.id);
+            if (!message.authorDetails.isChatModerator && !message.authorDetails.isChatOwner) {
+                chat.say("Okay 👌");
+                chat.delete(message.id);
+            } else {
+                chat.say("Sorry but I can't do that :(");
+            }
             break;
     }
 
-}); */
+});
 
 chat.connect();
-// chat.say("I'm a teapot!");
+chat.say("I'm a teapot!");
