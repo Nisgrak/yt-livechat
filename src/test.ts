@@ -3,9 +3,9 @@ import { LiveChat } from ".";
 const config = {
     liveChatID: process.env.LIVE_CHAT_ID || "",
     oauth: {
-        clientID: process.env.CLIENT_ID || "",
-        clientSecret: process.env.CLIENT_SECRET || "",
-        refreshToken: process.env.REFRESH_TOKEN || "",
+        client_id: process.env.CLIENT_ID || "",
+        client_secret: process.env.CLIENT_SECRET || "",
+        refresh_token: process.env.REFRESH_TOKEN || "",
     },
 };
 
@@ -13,25 +13,30 @@ console.log("Config from .env file:\n" + JSON.stringify(config, null, 4));
 const chat = new LiveChat(config);
 
 chat.on("connected", () => console.log("Connected to the YouTube API."));
+
 chat.on("polling", () => console.log("Polling new messages."));
-chat.on("token_refreshed", (tokens: any) => {
+
+chat.on("tokens", (tokens: any) => {
+    console.log(tokens);
     console.log(`Access token refreshed. The new one is ${tokens.access_token} and expire at ${tokens.expiry_date}.`);
 });
-chat.on("refreshing", () => console.log("Refreshing access token..."));
+
 chat.on("error", (error) => {
-    if (error && error.errors[0]) {
+    if (error && error.errors && error.errors[0]) {
         const reason = error.errors[0].reason;
 
         switch (reason) {
             case "forbidden":
                 if (error.config.url === "https://www.googleapis.com/youtube/v3/liveChat/messages") {
-                    return chat.say("Sorry, I'm not able to do that :/");
+                    // return chat.say("Sorry, I'm not able to do that :/");
                 }
         }
+    } else {
+        console.log(error);
     }
 });
 
-chat.on("chat", (message: any) => {
+/* chat.on("chat", (message: any) => {
     console.log(`Nouveau message de ${message.authorDetails.displayName}: ${message.snippet.displayMessage}`);
 
     switch (message.snippet.displayMessage) {
@@ -44,7 +49,7 @@ chat.on("chat", (message: any) => {
             break;
     }
 
-});
+}); */
 
 chat.connect();
-chat.say("I'm a teapot!");
+// chat.say("I'm a teapot!");

@@ -1,12 +1,17 @@
 export interface Config {
-    oauth: OauthConfig;
+    oauth: Oauth2Config;
     liveChatID: string;
-    interval?: number;
+    interval?: number | null;
 }
-export interface OauthConfig {
-    accessToken?: string;
-    clientID: string;
-    clientSecret: string;
-    refreshToken: string;
-    expiryDate?: string;
+
+export interface Oauth2Config extends Tokens {
+    client_id?: string;
+    client_secret?: string;
+    refresh_token?: string | null;
+}
+
+export interface Tokens {
+    access_token?: string;
+    token_type?: "Bearer" | string;
+    expiry_date?: number;
 }
