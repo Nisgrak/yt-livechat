@@ -228,8 +228,7 @@ Let's take a look at the result:
     {
         domain: 'youtube.liveChat',
         reason: 'liveChatNotFound',
-        message: 'The live chat that you are trying to retrieve cannot be found. Check the value of the requests <code>liveChatId</code> parameter to ensure
-that it is correct.'
+        message: 'The live chat that you are trying to retrieve cannot be found. Check the value of the requests <code>liveChatId</code> parameter to ensure that it is correct.'
     }
 ]
 ```
