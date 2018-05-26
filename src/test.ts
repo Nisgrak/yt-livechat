@@ -34,8 +34,7 @@ const receiverClient = new LiveChat({
 
 describe("Connection to YouTube API", () => {
     describe("Emitter", () => {
-        it("Should emit a \"connected\" event", function (this, done) {
-            this.timeout(3000);
+        it("Should emit a \"connected\" event", (done) => {
             emitterClient.on("connected", done);
             emitterClient.connect();
         });
@@ -46,8 +45,7 @@ describe("Connection to YouTube API", () => {
     });
 
     describe("Receiver", () => {
-        it("Should emit a \"connected\" event", function (this, done) {
-            this.timeout(3000);
+        it("Should emit a \"connected\" event", (done) => {
             receiverClient.on("connected", done);
             receiverClient.connect();
         });
@@ -58,8 +56,8 @@ describe("Connection to YouTube API", () => {
     });
 });
 
-describe("Messages", async () => {
-    it("Should send message without errors", function (done) {
+describe("Messages", () => {
+    it("Should send message without errors", (done) => {
         const resolve = setTimeout(done, 1500);
         emitterClient.on("error", (err) => {
             clearTimeout(resolve);
@@ -68,10 +66,33 @@ describe("Messages", async () => {
         emitterClient.say("Hey! I'm running a test :D");
     });
 
-    it("Should receive a message", function (this) {
-        this.timeout(2000);
+    it("Should receive a message", () => {
         receiverClient.on("chat", (msg: LiveChatMessage) => {
             expect(msg.snippet.textMessageDetails.messageText).to.equal("Hey! I'm running a test :D");
+        });
+    });
+});
+
+describe("Disconnection from YouTube API", () => {
+    describe("Emitter", () => {
+        it("Should emit a \"disconnected\" event", (done) => {
+            emitterClient.on("disconnected", done);
+            emitterClient.disconnect();
+        });
+
+        it("Should set the connected property to false", () => {
+            expect(emitterClient.connected).to.equal(false);
+        });
+    });
+
+    describe("Receiver", () => {
+        it("Should emit a \"disconnected\" event", (done) => {
+            receiverClient.on("disconnected", done);
+            receiverClient.disconnect();
+        });
+
+        it("Should set the connected property to false", () => {
+            expect(receiverClient.connected).to.equal(false);
         });
     });
 });
