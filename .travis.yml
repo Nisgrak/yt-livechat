@@ -6,6 +6,6 @@ node_js:
   - 8
 git:
   depth: 1
-script":
+script:
   - 'npm run build'
   - 'npm run test'
