@@ -262,7 +262,7 @@ A checked item is considered as a *work in progress*.
 
 Feel free to suggest features !
 
-[![Feature Requests](http://feathub.com/siffreinsg/yt-livechat?format=svg)](http://feathub.com/siffreinsg/yt-livechat)
+[![Feature Requests](http://feathub.com/siffreinsg/yt-livechat?format=svg)](http://feathub.com/siffreinsg/yt-livechat) [![Greenkeeper badge](https://badges.greenkeeper.io/siffreinsg/yt-livechat.svg)](https://greenkeeper.io/)
 
 
 
