@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
 import { OAuth2Client } from "google-auth-library";
+import { Credentials } from "google-auth-library/build/src/auth/credentials";
 import { Config, LiveChatMessage } from "./definitions";
 
 export class LiveChat extends EventEmitter {
@@ -100,10 +101,10 @@ export class LiveChat extends EventEmitter {
             expiry_date,
         } = this.config.oauth;
 
-        const client = new OAuth2Client(client_id, client_secret);
-        client.setCredentials({ access_token, refresh_token, expiry_date });
-        client.on("tokens", (tokens: any) => this.emit("tokens", tokens));
-        return client;
+        const auth = new OAuth2Client(client_id, client_secret);
+        auth.setCredentials({ access_token, refresh_token, expiry_date });
+        auth.on("tokens", (tokens: Credentials) => this.emit("tokens", tokens));
+        return auth;
     }
 
     /**

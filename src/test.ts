@@ -1,60 +1,77 @@
+import { expect } from "chai";
+import * as dotenv from "dotenv";
+import "mocha";
 import { LiveChat } from ".";
 import { LiveChatMessage } from "./definitions";
 
+dotenv.config();
+
 const config = {
-    interval: 10000,
     liveChatID: process.env.LIVE_CHAT_ID || "",
     oauth: {
         client_id: process.env.CLIENT_ID || "",
         client_secret: process.env.CLIENT_SECRET || "",
-        refresh_token: process.env.REFRESH_TOKEN || "",
     },
 };
 
-const chat = new LiveChat(config);
-
-chat.on("connected", () => console.log("Connected to the YouTube API."))
-    .on("polling", () => console.log("Polling new messages."))
-    .on("tokens", () => console.log("Access token refreshed."));
-
-chat.on("error", (error) => {
-    if (error && error.errors && error.errors[0]) {
-        const err = error.errors[0];
-
-        switch (err.reason) {
-            case "forbidden":
-                console.error(`[ERROR] ${err.message}`);
-                break;
-            case "liveChatNotFound":
-                console.error(`[ERROR] ${err.message}`);
-                process.exit(1);
-                break;
-            default:
-                console.log(err);
-        }
-    } else {
-        console.log(error);
-    }
+const emitterClient = new LiveChat({
+    ...config,
+    oauth: {
+        ...config.oauth,
+        access_token: "ya29.Gl3HBZ0mH-155LHyG65YX5MfIl4G0yl2VBX-CrL-3nDl0lasoENZNX4tY643EzEzfJuAQtgXfuz5OxfSRt7OXrCBeqE1xyhreRBJf11MKr1i0i2IT0_d9AH0rZRhgoY", // tslint:disable-line
+        refresh_token: process.env.EMITTER_RTOKEN,
+    },
 });
 
-chat.on("chat", (message: LiveChatMessage) => {
-    console.log(`New message from ${message.authorDetails.displayName}: ${message.snippet.displayMessage}`);
-
-    switch (message.snippet.displayMessage) {
-        case "/sayhello":
-            chat.say("I'm not your slave, I'm free. I don't have any master. I'm gonna conquer this world. Fear me!!!");
-            break;
-        case "/deleteme":
-            if (!message.authorDetails.isChatModerator && !message.authorDetails.isChatOwner) {
-                chat.say("Okay 👌");
-                chat.delete(message.id);
-            } else {
-                chat.say("Sorry but I can't do that :(");
-            }
-            break;
-    }
-
+const receiverClient = new LiveChat({
+    ...config,
+    oauth: {
+        ...config.oauth,
+        access_token: "ya29.Gl3HBZ0mH-155LHyG65YX5MfIl4G0yl2VBX-CrL-3nDl0lasoENZNX4tY643EzEzfJuAQtgXfuz5OxfSRt7OXrCBeqE1xyhreRBJf11MKr1i0i2IT0_d9AH0rZRhgoY", // tslint:disable-line
+        refresh_token: process.env.RECEIVER_RTOKEN,
+    },
 });
 
-chat.connect();
-chat.say("I'm a teapot!");
+describe("Connection to YouTube API", () => {
+    describe("Emitter", () => {
+        it("Should emit a \"connected\" event", function (this, done) {
+            this.timeout(3000);
+            emitterClient.on("connected", done);
+            emitterClient.connect();
+        });
+
+        it("Should set the connected property to true", () => {
+            expect(emitterClient.connected).to.equal(true);
+        });
+    });
+
+    describe("Receiver", () => {
+        it("Should emit a \"connected\" event", function (this, done) {
+            this.timeout(3000);
+            receiverClient.on("connected", done);
+            receiverClient.connect();
+        });
+
+        it("Should set the connected property to true", () => {
+            expect(receiverClient.connected).to.equal(true);
+        });
+    });
+});
+
+describe("Messages", async () => {
+    it("Should send message without errors", function (done) {
+        const resolve = setTimeout(done, 1500);
+        emitterClient.on("error", (err) => {
+            clearTimeout(resolve);
+            done(err);
+        });
+        emitterClient.say("Hey! I'm running a test :D");
+    });
+
+    it("Should receive a message", function (this) {
+        this.timeout(2000);
+        receiverClient.on("chat", (msg: LiveChatMessage) => {
+            expect(msg.snippet.textMessageDetails.messageText).to.equal("Hey! I'm running a test :D");
+        });
+    });
+});

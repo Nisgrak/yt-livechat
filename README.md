@@ -248,6 +248,22 @@ Take a look here : https://developers.google.com/youtube/v3/live/docs/liveChatMe
 
 
 
+## Todo List
+
+A checked item is considered as a *work in progress*.
+
+- [x] Write unit tests
+- [ ] Methods should return promises (but still support events)
+- [ ] Add methods to get a Live Chat ID
+
+
+
+Feel free to suggest features !
+
+[![Feature Requests](http://feathub.com/siffreinsg/yt-livechat?format=svg)](http://feathub.com/siffreinsg/yt-livechat)
+
+
+
 ## Contributions
 
 You're free to contribute by publishing pull requests, issues, ideas, ...
