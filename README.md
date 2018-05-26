@@ -1,4 +1,4 @@
-# YT-Livechat
+# YT-Livechat [![Build Status](https://travis-ci.com/siffreinsg/yt-livechat.svg?branch=master)](https://travis-ci.com/siffreinsg/yt-livechat)
 
 [![NPM](https://nodei.co/npm/yt-livechat.png)](https://nodei.co/npm/yt-livechat/)
 
@@ -14,7 +14,9 @@ $ yarn add yt-livechat
 
 ## Simple example
 ```javascript
-const { LiveChat } = require("yt-livechat"); // Import the lib
+// Import the lib (delete one of the line depending on what you use)
+const { LiveChat } = require("yt-livechat"); // NODE
+import LiveChat from "yt-livechat" // TYPESCRIPT
 
 // Let's do some config
 const config = {
