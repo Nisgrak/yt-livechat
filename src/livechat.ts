@@ -1,17 +1,24 @@
 import { EventEmitter } from "events";
-import { OAuth2Client } from "google-auth-library";
 import { Credentials } from "google-auth-library/build/src/auth/credentials";
-import { Config, LiveChatMessage } from "./definitions";
+import { OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
+import { Config, LiveChatMessage } from "./types";
 
 export class LiveChat extends EventEmitter {
+    /**
+     * Equals true if the client is polling messages.
+     */
     public connected: boolean = false;
+
+    /**
+     * OAuth2 client used to do authenticated requests.
+     */
     public auth: OAuth2Client;
     private pollTimeout: any;
     private pageToken: string = "";
     private knownMsgs: string[] = [];
 
     /**
-     * Set config, init events, create oauth client
+     * Set config, create oauth client.
      * @param {Config} config Class config
      */
     constructor(public config: Config) {
@@ -22,7 +29,7 @@ export class LiveChat extends EventEmitter {
     /**
      * Start polling messages from the chat
      */
-    public connect(): this {
+    public async connect() {
         this.connected = true;
         this.emit("connected");
         this.poll();
@@ -32,7 +39,7 @@ export class LiveChat extends EventEmitter {
     /**
      * Stop polling messages from the chat
      */
-    public disconnect(): this {
+    public async disconnect() {
         clearTimeout(this.pollTimeout);
         this.connected = false;
         this.emit("disconnected");
@@ -42,11 +49,11 @@ export class LiveChat extends EventEmitter {
     /**
      * Recreate the oauth client, disconnect and reconnect to the chat.
      */
-    public reconnect(): this {
+    public async reconnect() {
         this.auth = this.login();
-        this.disconnect()
-            .connect()
-            .emit("reconnected");
+        await this.disconnect();
+        await this.connect();
+        this.emit("reconnected");
         return this;
     }
 
@@ -54,39 +61,45 @@ export class LiveChat extends EventEmitter {
      * Send a message
      * @param {string} message Message content
      */
-    public say(message: string): this {
-        this.auth.request({
-            data: {
-                snippet: {
-                    liveChatId: this.config.liveChatID,
-                    textMessageDetails: {
-                        messageText: message,
+    public async say(message: string) {
+        return new Promise((resolve, reject) => {
+            this.auth.request({
+                data: {
+                    snippet: {
+                        liveChatId: this.config.liveChatID,
+                        textMessageDetails: {
+                            messageText: message,
+                        },
+                        type: "textMessageEvent",
                     },
-                    type: "textMessageEvent",
                 },
-            },
-            method: "POST",
-            params: {
-                part: "snippet",
-            },
-            url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-        }).catch((err) => this.error.bind(this, err)());
-        return this;
+                method: "POST",
+                params: {
+                    part: "snippet",
+                },
+                url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
+            })
+                .then((res) => resolve(res.data))
+                .catch((err) => this.error.bind(this, err, reject)());
+        });
     }
 
     /**
      * Delete a message
      * @param messageId ID of the message
      */
-    public delete(messageId: string): this {
-        this.auth.request({
-            method: "DELETE",
-            params: {
-                id: messageId,
-            },
-            url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-        }).catch((err) => this.error.bind(this, err)());
-        return this;
+    public delete(messageId: string) {
+        return new Promise((resolve, reject) => {
+            this.auth.request({
+                method: "DELETE",
+                params: {
+                    id: messageId,
+                },
+                url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
+            })
+                .then(() => resolve(this))
+                .catch((err) => this.error.bind(this, err, reject)());
+        });
     }
 
     /**
@@ -163,8 +176,9 @@ export class LiveChat extends EventEmitter {
      * Parse errors
      * @param err Error from any requests
      */
-    private error(err: any): this {
-        if (!err.errors || err.errors || !err.errors[0]) {
+    private error(err: any, cb?: (err: any) => void): this {
+        if (!err.errors || !err.errors || !err.errors[0]) {
+            if (cb) { cb(err); }
             this.emit("error", err);
             return this;
         }
@@ -174,13 +188,8 @@ export class LiveChat extends EventEmitter {
             case "authError":
                 this.refreshAuth();
                 break;
-            case "forbidden":
-            case "liveChatDisabled":
-            case "liveChatEnded":
-            case "liveChatNotFound":
-            case "rateLimitExceeded":
-            case "quotaExceeded":
             default:
+                if (cb) { cb(err); }
                 this.emit("error", err);
         }
         return this;

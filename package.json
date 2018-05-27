@@ -6,9 +6,9 @@
   "scripts": {
     "build": "./node_modules/.bin/tsc -p .",
     "lint": "./node_modules/.bin/tslint --fix -o lint_errors.log -p .",
+    "test": "./node_modules/.bin/mocha --exit build/test.js",
     "start": "node build/index.js",
-    "prepublishOnly": "./node_modules/.bin/tslint --fix -o lint_errors.log -p . && npm run build",
-    "test": "mocha --exit build/test.js"
+    "prepublishOnly": "npm run lint && npm run build && npm run test"
   },
   "repository": {
     "type": "git",

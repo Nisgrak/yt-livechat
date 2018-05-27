@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as dotenv from "dotenv";
 import "mocha";
 import { LiveChat } from ".";
-import { LiveChatMessage } from "./definitions";
+import { LiveChatMessage } from "./types";
 
 dotenv.config();
 
@@ -14,61 +14,68 @@ const config = {
     },
 };
 
-const emitterClient = new LiveChat({
+const userClient = new LiveChat({
     ...config,
     oauth: {
         ...config.oauth,
-        access_token: "ya29.Gl3HBZ0mH-155LHyG65YX5MfIl4G0yl2VBX-CrL-3nDl0lasoENZNX4tY643EzEzfJuAQtgXfuz5OxfSRt7OXrCBeqE1xyhreRBJf11MKr1i0i2IT0_d9AH0rZRhgoY", // tslint:disable-line
-        refresh_token: process.env.EMITTER_RTOKEN,
+        access_token: process.env.USER_ATOKEN,
+        refresh_token: process.env.USER_RTOKEN,
     },
 });
 
-const receiverClient = new LiveChat({
+const modClient = new LiveChat({
     ...config,
     oauth: {
         ...config.oauth,
-        access_token: "ya29.Gl3HBZ0mH-155LHyG65YX5MfIl4G0yl2VBX-CrL-3nDl0lasoENZNX4tY643EzEzfJuAQtgXfuz5OxfSRt7OXrCBeqE1xyhreRBJf11MKr1i0i2IT0_d9AH0rZRhgoY", // tslint:disable-line
-        refresh_token: process.env.RECEIVER_RTOKEN,
+        access_token: process.env.MOD_ATOKEN,
+        refresh_token: process.env.MOD_RTOKEN,
     },
 });
 
 describe("Connection to YouTube API", () => {
-    describe("Emitter", () => {
+    describe("User", () => {
         it("Should emit a \"connected\" event", (done) => {
-            emitterClient.on("connected", done);
-            emitterClient.connect();
+            userClient.on("connected", done);
+            userClient.connect();
         });
 
         it("Should set the connected property to true", () => {
-            expect(emitterClient.connected).to.equal(true);
+            expect(userClient.connected).to.equal(true);
         });
     });
 
-    describe("Receiver", () => {
-        it("Should emit a \"connected\" event", (done) => {
-            receiverClient.on("connected", done);
-            receiverClient.connect();
+    describe("Moderator", () => {
+        it("Should also return a promise", (done) => {
+            modClient.connect()
+                .then(() => done())
+                .catch(done);
         });
 
         it("Should set the connected property to true", () => {
-            expect(receiverClient.connected).to.equal(true);
+            expect(modClient.connected).to.equal(true);
         });
     });
 });
 
 describe("Messages", () => {
+    const text = "Hey! I'm running a test :D";
     it("Should send message without errors", (done) => {
-        const resolve = setTimeout(done, 1500);
-        emitterClient.on("error", (err) => {
-            clearTimeout(resolve);
-            done(err);
-        });
-        emitterClient.say("Hey! I'm running a test :D");
+        userClient.say(text)
+            .then(() => done())
+            .catch(done);
     });
 
-    it("Should receive a message", () => {
-        receiverClient.on("chat", (msg: LiveChatMessage) => {
-            expect(msg.snippet.textMessageDetails.messageText).to.equal("Hey! I'm running a test :D");
+    it("Should receive the message", () => {
+        userClient.on("chat", (msg: LiveChatMessage) => {
+            expect(msg.snippet.textMessageDetails.messageText).to.equal(text);
+        });
+    });
+
+    it("Should delete the message", (done) => {
+        modClient.on("chat", (msg: LiveChatMessage) => {
+            modClient.delete(msg.id)
+                .then(() => done())
+                .catch(done);
         });
     });
 });
@@ -76,23 +83,22 @@ describe("Messages", () => {
 describe("Disconnection from YouTube API", () => {
     describe("Emitter", () => {
         it("Should emit a \"disconnected\" event", (done) => {
-            emitterClient.on("disconnected", done);
-            emitterClient.disconnect();
+            userClient.on("disconnected", done);
+            userClient.disconnect();
         });
 
         it("Should set the connected property to false", () => {
-            expect(emitterClient.connected).to.equal(false);
+            expect(userClient.connected).to.equal(false);
         });
     });
 
     describe("Receiver", () => {
-        it("Should emit a \"disconnected\" event", (done) => {
-            receiverClient.on("disconnected", done);
-            receiverClient.disconnect();
+        it("Should also return a promise", (done) => {
+            modClient.disconnect().then(() => done());
         });
 
         it("Should set the connected property to false", () => {
-            expect(receiverClient.connected).to.equal(false);
+            expect(modClient.connected).to.equal(false);
         });
     });
 });

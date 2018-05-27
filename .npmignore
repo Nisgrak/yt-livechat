@@ -4,9 +4,7 @@ tsconfig.json
 .git*
 .env
 .vscode
-shrinkwrap.yaml
 build/test.js
 build/test.d.ts
 LICENSE
 lint_errors.log
-package-*

@@ -1,8 +1,8 @@
-# YT-Livechat [![Build Status](https://travis-ci.com/siffreinsg/yt-livechat.svg?branch=master)](https://travis-ci.com/siffreinsg/yt-livechat)
+# YT-Livechat [![Build Status](https://travis-ci.com/siffreinsg/yt-livechat.svg?branch=master)](https://travis-ci.com/siffreinsg/yt-livechat)[![Greenkeeper badge](https://badges.greenkeeper.io/siffreinsg/yt-livechat.svg)](https://greenkeeper.io/)
 
 [![NPM](https://nodei.co/npm/yt-livechat.png)](https://nodei.co/npm/yt-livechat/)
 
-Create easily chat bots for any YouTube stream liveChat.
+Create easily chat bots for any YouTube stream's LiveChat.
 
 ## Install
 Install via NPM, PNPM or Yarn from repo
@@ -14,13 +14,13 @@ $ yarn add yt-livechat
 
 ## Simple example
 ```javascript
-// Import the lib (delete one of the line depending on what you use)
-const { LiveChat } = require("yt-livechat"); // NODE
-import LiveChat from "yt-livechat" // TYPESCRIPT
+// Import the lib
+const { LiveChat } = require("yt-livechat");
+// Or with TypeScript:
+// import LiveChat from "yt-livechat"
 
 // Let's do some config
 const config = {
-    interval: process.env.POLL_INT, // Time interval between each "list" request
     liveChatID: process.env.LIVE_CHAT_ID || "", // ID of the LiveChat
     oauth: { // OAuth2 keys from Google Developers Console
         client_id: process.env.CLIENT_ID || "",
@@ -37,7 +37,6 @@ chat.on("error", (error) => console.log(error));
 
 chat.on("chat", (message) => {
     console.log(`New message from ${message.authorDetails.displayName}.`);
-
     if (message.snippet.displayMessage === "/hello") {
         chat.say("Hello world !");
 	}
@@ -81,16 +80,19 @@ const chat = new LiveChat(config);
 ##### Config structure
 ```typescript
 {
-    oauth: { // Find this on the Google Developers Console
+    oauth: { // See this: https://developers.google.com/identity/protocols/OAuth2
     	client_id?: string;
     	client_secret?: string;
     	refresh_token?: string;
+        access_token?: string;
+   		token_type?: "Bearer" | string;
+    	expiry_date?: number;
     };
     liveChatID: string; // ID of the LiveChat
     interval?: number; // Force time interval in ms between each poll.
 }
 ```
-You might be able to find ID of the Live Chat with [this API endpoint](https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/list)
+You might be able to find ID of the Live Chat with [this API endpoint](https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/list).
 
 
 
@@ -104,9 +106,7 @@ Equals `true` if the lib polls messages. Else equals `false`.
 
 
 ## Methods
-#### All the public methods return the `LiveChat` object.
-
-### `connect()`
+### `connect(): Promise<this>`
 Start polling messages from the chat.
 
 ##### Usage
@@ -114,8 +114,8 @@ Start polling messages from the chat.
 chat.connect()
 ```
 
+### `disconnect(): Promise<this>`
 
-### `disconnect()`
 Stop polling messages from the chat.
 
 ##### Usage
@@ -124,7 +124,7 @@ chat.disconnect()
 ```
 
 
-### `reconnect()`
+### `reconnect(): Promise<this>`
 Re-create OAuth client and just execute `disconnect()`and `connect()`.
 
 ##### Usage
@@ -133,7 +133,7 @@ chat.reconnect()
 ```
 
 
-### `say(message: string)`
+### `say(message: string): Promise<LiveChatMessage>`
 Send a message.
 
 ##### Usage
@@ -142,7 +142,7 @@ chat.say("Hello !")
 ```
 
 
-### `delete(messageId: string)`
+### `delete(messageId: string): Promise<this>`
 Delete a message based on his ID.
 
 ##### Usage
@@ -255,16 +255,14 @@ Take a look here : https://developers.google.com/youtube/v3/live/docs/liveChatMe
 A checked item is considered as a *work in progress*.
 
 - [x] Write unit tests
-- [ ] Methods should return promises (but still support events)
+- [x] Methods should return promises (but still support events)
 - [ ] Add methods to get a Live Chat ID
 
 
 
 Feel free to suggest features !
 
-[![Feature Requests](http://feathub.com/siffreinsg/yt-livechat?format=svg)](http://feathub.com/siffreinsg/yt-livechat) [![Greenkeeper badge](https://badges.greenkeeper.io/siffreinsg/yt-livechat.svg)](https://greenkeeper.io/)
-
-
+[![Feature Requests](https://feathub.com/siffreinsg/yt-livechat?format=svg)](http://feathub.com/siffreinsg/yt-livechat)
 
 ## Contributions
 
