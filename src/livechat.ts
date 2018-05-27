@@ -68,7 +68,7 @@ export class LiveChat extends EventEmitter {
                     snippet: {
                         liveChatId: this.config.liveChatID,
                         textMessageDetails: {
-                            messageText: message,
+                            messageText: "" + message,
                         },
                         type: "textMessageEvent",
                     },
@@ -80,7 +80,10 @@ export class LiveChat extends EventEmitter {
                 url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
             })
                 .then((res) => resolve(res.data))
-                .catch((err) => this.error.bind(this, err, reject)());
+                .catch((err) => {
+                    this.error(err);
+                    reject(err);
+                });
         });
     }
 
@@ -98,7 +101,10 @@ export class LiveChat extends EventEmitter {
                 url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
             })
                 .then(() => resolve(this))
-                .catch((err) => this.error.bind(this, err, reject)());
+                .catch((err) => {
+                    this.error(err);
+                    reject(err);
+                });
         });
     }
 
@@ -136,10 +142,10 @@ export class LiveChat extends EventEmitter {
             },
             url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
         }).then((res) => {
-            this.parse.bind(this, res)();
+            this.parse(res);
         }).catch((err) => {
-            this.error.bind(this, err)();
-            this.parse.bind(this, undefined)();
+            this.error(err);
+            this.parse(undefined);
         });
         return this;
     }
@@ -176,9 +182,8 @@ export class LiveChat extends EventEmitter {
      * Parse errors
      * @param err Error from any requests
      */
-    private error(err: any, cb?: (err: any) => void): this {
+    private error(err: any): this {
         if (!err.errors || !err.errors || !err.errors[0]) {
-            if (cb) { cb(err); }
             this.emit("error", err);
             return this;
         }
@@ -189,7 +194,6 @@ export class LiveChat extends EventEmitter {
                 this.refreshAuth();
                 break;
             default:
-                if (cb) { cb(err); }
                 this.emit("error", err);
         }
         return this;
