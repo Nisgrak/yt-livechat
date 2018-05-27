@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as dotenv from "dotenv";
 import "mocha";
 import { LiveChat } from ".";
-import { LiveChatMessage } from "./types";
+// import { LiveChatMessage } from "./types";
 
 dotenv.config();
 
@@ -57,25 +57,30 @@ describe("Connection to YouTube API", () => {
     });
 });
 
-describe("Messages", () => {
+describe("Messages", function () {
+    this.timeout(15000);
     it("Should send message without errors", (done) => {
-        userClient.say("Hello world!")
+        userClient.say("Test #1 -> Sending message")
             .then(() => done())
-            .catch(done);
+            .catch((err) => done(err));
     });
 
     it("Should receive the message", (done) => {
-        userClient.on("chat", () => {
+        userClient.once("chat", () => {
             done();
         });
+        modClient.say("Test #2 -> Receiving message")
+            .catch(() => done(new Error("Could not send the message to receive.")));
     });
 
     it("Should delete the message", (done) => {
-        modClient.on("chat", (msg: LiveChatMessage) => {
-            modClient.delete(msg.id)
-                .then(() => done())
-                .catch(done);
-        });
+        userClient.say("Test #3 -> Deleting message!")
+            .then((msg: any) => {
+                modClient.delete(msg.id)
+                    .then(() => done())
+                    .catch(done);
+            })
+            .catch(() => done(new Error("Could not send the message to delete.")));
     });
 });
 

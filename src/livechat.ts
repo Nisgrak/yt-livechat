@@ -68,7 +68,7 @@ export class LiveChat extends EventEmitter {
                     snippet: {
                         liveChatId: this.config.liveChatID,
                         textMessageDetails: {
-                            messageText: "" + message,
+                            messageText: message,
                         },
                         type: "textMessageEvent",
                     },
