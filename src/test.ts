@@ -58,16 +58,15 @@ describe("Connection to YouTube API", () => {
 });
 
 describe("Messages", () => {
-    const text = "Hey! I'm running a test :D";
     it("Should send message without errors", (done) => {
-        userClient.say(text)
+        userClient.say("Hey! I'm running a test :D")
             .then(() => done())
             .catch(done);
     });
 
     it("Should receive the message", () => {
         userClient.on("chat", (msg: LiveChatMessage) => {
-            expect(msg.snippet.textMessageDetails.messageText).to.equal(text);
+            expect(msg.snippet.textMessageDetails.messageText).to.be.a("string");
         });
     });
 
