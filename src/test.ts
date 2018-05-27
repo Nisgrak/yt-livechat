@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as dotenv from "dotenv";
 import "mocha";
 import { LiveChat } from ".";
-// import { LiveChatMessage } from "./types";
+import { LiveChatMessage } from "./types";
 
 dotenv.config();
 
@@ -35,7 +35,7 @@ const modClient = new LiveChat({
 describe("Connection to YouTube API", () => {
     describe("User", () => {
         it("Should emit a \"connected\" event", (done) => {
-            userClient.on("connected", done);
+            userClient.once("connected", done);
             userClient.connect();
         });
 
@@ -58,11 +58,9 @@ describe("Connection to YouTube API", () => {
 });
 
 describe("Messages", function () {
-    this.timeout(15000);
-    it("Should send message without errors", (done) => {
-        userClient.say("Test #1 -> Sending message")
-            .then(() => done())
-            .catch((err) => done(err));
+    this.timeout(5000);
+    it("Should send message without errors", () => {
+        userClient.say("Test #1 -> Sending message");
     });
 
     it("Should receive the message", (done) => {
@@ -74,8 +72,8 @@ describe("Messages", function () {
     });
 
     it("Should delete the message", (done) => {
-        userClient.say("Test #3 -> Deleting message!")
-            .then((msg: any) => {
+        userClient.say("Test #3 -> Deleting message")
+            .then((msg: LiveChatMessage) => {
                 modClient.delete(msg.id)
                     .then(() => done())
                     .catch(done);
@@ -87,7 +85,7 @@ describe("Messages", function () {
 describe("Disconnection from YouTube API", () => {
     describe("Emitter", () => {
         it("Should emit a \"disconnected\" event", (done) => {
-            userClient.on("disconnected", done);
+            userClient.once("disconnected", done);
             userClient.disconnect();
         });
 

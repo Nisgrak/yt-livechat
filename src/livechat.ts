@@ -61,7 +61,7 @@ export class LiveChat extends EventEmitter {
      * Send a message
      * @param {string} message Message content
      */
-    public async say(message: string) {
+    public say(message: string): Promise<LiveChatMessage> {
         return new Promise((resolve, reject) => {
             this.auth.request({
                 data: {
@@ -78,12 +78,13 @@ export class LiveChat extends EventEmitter {
                     part: "snippet",
                 },
                 url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-            })
-                .then((res) => resolve(res.data))
-                .catch((err) => {
+            }, (err: any, res: any) => {
+                if (err) {
                     this.error(err);
-                    reject(err);
-                });
+                    return reject(err);
+                }
+                resolve(res.data);
+            });
         });
     }
 
@@ -99,12 +100,13 @@ export class LiveChat extends EventEmitter {
                     id: messageId,
                 },
                 url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-            })
-                .then(() => resolve(this))
-                .catch((err) => {
+            }, (err: any) => {
+                if (err) {
                     this.error(err);
-                    reject(err);
-                });
+                    return reject(err);
+                }
+                resolve();
+            });
         });
     }
 
@@ -141,13 +143,13 @@ export class LiveChat extends EventEmitter {
                 part: "snippet, authorDetails",
             },
             url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-        }).then((res) => {
+        }, (err: any, res: any) => {
+            if (err) {
+                this.error(err);
+                return this.parse(undefined);
+            }
             this.parse(res);
-        }).catch((err) => {
-            this.error(err);
-            this.parse(undefined);
         });
-        return this;
     }
 
     /**
