@@ -2,7 +2,8 @@
   "name": "yt-livechat",
   "version": "2.1.0",
   "description": "Interact with any YouTube liveChat.",
-  "main": "./build/",
+  "main": "build/index",
+  "types": "build/index",
   "scripts": {
     "build": "./node_modules/.bin/tsc -p .",
     "lint": "./node_modules/.bin/tslint --fix -o lint_errors.log -p .",
