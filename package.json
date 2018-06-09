@@ -42,6 +42,6 @@
   },
   "dependencies": {
     "dotenv": "^6.0.0",
-    "google-auth-library": "^1.5.0"
+    "google-auth-library": "^1.6.1"
   }
 }
