@@ -1,14 +1,14 @@
 {
     "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
+    "extends": "tslint:all",
     "jsRules": {},
     "rules": {
-        "no-console": false,
-        "interface-name": false,
-        "space-before-function-paren": false,
-        "only-arrow-functions": false
-    },
-    "rulesDirectory": []
+        "no-default-export": false,
+        "no-inferrable-types": false,
+        "prefer-function-over-method": false,
+        "no-magic-numbers": false,
+        "no-this-assignment": false,
+        "align": false,
+        "no-submodule-imports": false,
+    }
 }

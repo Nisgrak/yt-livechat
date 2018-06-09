@@ -1,15 +1,15 @@
 dependencies:
-  dotenv: 5.0.1
-  google-auth-library: 1.5.0
+  dotenv: 6.0.0
+  google-auth-library: 1.6.1
 devDependencies:
   '@types/chai': 4.1.3
   '@types/dotenv': 4.0.3
-  '@types/mocha': 5.2.0
-  '@types/node': 10.1.2
+  '@types/mocha': 5.2.1
+  '@types/node': 10.3.2
   chai: 4.1.2
   mocha: 5.2.0
   tslint: 5.10.0
-  typescript: 2.8.3
+  typescript: 2.9.1
 packages:
   /@types/chai/4.1.3:
     dev: true
@@ -17,18 +17,18 @@ packages:
       integrity: sha512-f5dXGzOJycyzSMdaXVhiBhauL4dYydXwVpavfQ1mVCaGjR56a9QfklXObUxlIY9bGTmCPHEEZ04I16BZ/8w5ww==
   /@types/dotenv/4.0.3:
     dependencies:
-      '@types/node': 10.1.2
+      '@types/node': 10.3.2
     dev: true
     resolution:
       integrity: sha512-mmhpINC/HcLGQK5ikFJlLXINVvcxhlrV+ZOUJSN7/ottYl+8X4oSXzS9lBtDkmWAl96EGyGyLrNvk9zqdSH8Fw==
-  /@types/mocha/5.2.0:
+  /@types/mocha/5.2.1:
     dev: true
     resolution:
-      integrity: sha512-YeDiSEzznwZwwp766SJ6QlrTyBYUGPSIwmREHVTmktUYiT/WADdWtpt9iH0KuUSf8lZLdI4lP0X6PBzPo5//JQ==
-  /@types/node/10.1.2:
+      integrity: sha512-dOrgprHnkDaj1pmrwdcMAf0QRNQzqTB5rxJph+iIQshSmIvtgRqJ0nim8u1vvXU8iOXZrH96+M46JDFTPLingA==
+  /@types/node/10.3.2:
     dev: true
     resolution:
-      integrity: sha512-bjk1RIeZBCe/WukrFToIVegOf91Pebr8cXYBwLBIsfiGWVQ+ifwWsT59H3RxrWzWrzd1l/Amk1/ioY5Fq3/bpA==
+      integrity: sha512-9NfEUDp3tgRhmoxzTpTo+lq+KIVFxZahuRX0LHF/9IzKHaWuoWsIrrJ61zw5cnnlGINX8lqJzXYfQTOICS5Q+A==
   /ansi-regex/2.1.1:
     dev: true
     engines:
@@ -175,12 +175,12 @@ packages:
       node: '>=0.3.1'
     resolution:
       integrity: sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
-  /dotenv/5.0.1:
+  /dotenv/6.0.0:
     dev: false
     engines:
-      node: '>=4.6.0'
+      node: '>=6'
     resolution:
-      integrity: sha512-4As8uPrjfwb7VXC+WnLCbXK7y+Ueb2B3zgNCePYfhxS1PYeaO1YTeplffTEcbfLhvFNGLAz90VvJs9yomG7bow==
+      integrity: sha512-FlWbnhgjtwD+uNLUGHbMykMOYQaTivdHEmYwAKFjn6GKe/CqY0fNae93ZHTd20snh9ZLr8mTzIL9m0APQ1pjQg==
   /ecdsa-sig-formatter/1.0.10:
     dependencies:
       safe-buffer: 5.1.2
@@ -246,7 +246,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-MJTUg1kjuLeQCJ+ccE4Vpa6kKVXkPYJ2mOCQyUuKLcLQsdrMCpBPUi8qVE6+YuaJkozeA9NusTAw3hLr8Xe5EQ==
-  /google-auth-library/1.5.0:
+  /google-auth-library/1.6.1:
     dependencies:
       axios: 0.18.0
       gcp-metadata: 0.6.3
@@ -259,7 +259,7 @@ packages:
     engines:
       node: '>=4'
     resolution:
-      integrity: sha512-xpibA/hkq4waBcpIkSJg4GiDAqcBWjJee3c47zj7xP3RQ0A9mc8MP3Vc9sc8SGRoDYA0OszZxTjW7SbcC4pJIA==
+      integrity: sha512-jYiWC8NA9n9OtQM7ANn0Tk464do9yhKEtaJ72pKcaBiEwn4LwcGYIYOfwtfsSm3aur/ed3tlSxbmg24IAT6gAg==
   /google-p12-pem/1.0.2:
     dependencies:
       node-forge: 0.7.5
@@ -320,13 +320,13 @@ packages:
     dev: true
     resolution:
       integrity: sha1-mGbfOVECEw449/mWvOtlRDIJwls=
-  /js-yaml/3.11.0:
+  /js-yaml/3.12.0:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.0
     dev: true
     resolution:
-      integrity: sha512-saJstZWv7oNeOyBh3+Dx1qWzhW0+e6/8eDzo7p5rDFqxntSztloLtuKu+Ejhtq82jsilwOIZYsCz+lIjthg1Hw==
+      integrity: sha512-PIt2cnwmPfL4hKNwqeiuz4bKfnzHTBv6HyVgjahA6mPLwPDzjDWrplJBMjHUFxku/N3FlmrbyPclad+I+4mJ3A==
   /jwa/1.1.6:
     dependencies:
       buffer-equal-constant-time: 1.0.1
@@ -479,10 +479,10 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-zjaXglF5nnWpsq470jSv6P9DwPvgLkuapYmfDm3JWOm0vkNTVF2tI4UrN2r6jH1qM/uc/WtxYY1hYoA2dOKj5w==
-  /tslib/1.9.1:
+  /tslib/1.9.2:
     dev: true
     resolution:
-      integrity: sha512-avfPS28HmGLLc2o4elcc2EIq2FcH++Yo5YxpBZi9Yw93BCTGFthI4HPE4Rpep6vSYQaK8e69PelM44tPj+RaQg==
+      integrity: sha512-AVP5Xol3WivEr7hnssHDsaM+lVrVXWUvd1cfXTRkTj80b//6g2wIFEH6hZG0muGZRnHGrfttpdzRk3YlBkWjKw==
   /tslint/5.10.0:
     dependencies:
       babel-code-frame: 6.26.0
@@ -491,11 +491,11 @@ packages:
       commander: 2.15.1
       diff: 3.5.0
       glob: 7.1.2
-      js-yaml: 3.11.0
+      js-yaml: 3.12.0
       minimatch: 3.0.4
       resolve: 1.7.1
       semver: 5.5.0
-      tslib: 1.9.1
+      tslib: 1.9.2
       tsutils: 2.27.1
     dev: true
     engines:
@@ -506,7 +506,7 @@ packages:
       integrity: sha1-EeJrzLiK+gLdDZlWyuPUVAtfVMM=
   /tsutils/2.27.1:
     dependencies:
-      tslib: 1.9.1
+      tslib: 1.9.2
     dev: true
     peerDependencies:
       typescript: '>=2.1.0 || >=2.1.0-dev || >=2.2.0-dev || >=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >= 3.0.0-dev'
@@ -518,12 +518,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
-  /typescript/2.8.3:
+  /typescript/2.9.1:
     dev: true
     engines:
       node: '>=4.2.0'
     resolution:
-      integrity: sha512-K7g15Bb6Ra4lKf7Iq2l/I5/En+hLIHmxWZGq3D4DIRNFxMNV6j2SHSvDOqs2tGd4UvD/fJvrwopzQXjLrT7Itw==
+      integrity: sha512-h6pM2f/GDchCFlldnriOhs1QHuwbnmj6/v7499eMHqPeW4V2G0elua2eIc2nu8v2NdHV0Gm+tzX83Hr6nUFjQA==
   /wrappy/1.0.2:
     dev: true
     resolution:
@@ -539,10 +539,10 @@ specifiers:
   '@types/chai': ^4.1.3
   '@types/dotenv': ^4.0.3
   '@types/mocha': ^5.2.0
-  '@types/node': ^10.1.2
+  '@types/node': ^10.1.3
   chai: ^4.1.2
-  dotenv: ^5.0.1
-  google-auth-library: ^1.5.0
+  dotenv: ^6.0.0
+  google-auth-library: ^1.6.1
   mocha: ^5.2.0
   tslint: ^5.9.1
   typescript: ^2.8.3

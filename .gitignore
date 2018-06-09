@@ -59,6 +59,3 @@ build
 
 # Local environment and files
 .env
-Database.json
-.vscode
-lint_errors.log

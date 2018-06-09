@@ -8,3 +8,4 @@ build/test.js
 build/test.d.ts
 LICENSE
 lint_errors.log
+build/*.map

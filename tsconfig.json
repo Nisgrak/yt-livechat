@@ -1,14 +1,25 @@
 {
   "compilerOptions": {
+    "target": "es2015",
     "module": "commonjs",
-    "strict": true,
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./build",
+    "rootDir": "./src",
     "removeComments": true,
-    "preserveConstEnums": true,
-    "outDir": "build",
-    "target": "es6",
+    "noEmit": false,
+    "downlevelIteration": true,
+    "isolatedModules": false,
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "declaration": true,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "types": [
       "mocha"
     ]

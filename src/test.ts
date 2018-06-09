@@ -83,7 +83,7 @@ describe("Messages", function () {
 });
 
 describe("Disconnection from YouTube API", () => {
-    describe("Emitter", () => {
+    describe("User", () => {
         it("Should emit a \"disconnected\" event", (done) => {
             userClient.once("disconnected", done);
             userClient.disconnect();
@@ -94,7 +94,7 @@ describe("Disconnection from YouTube API", () => {
         });
     });
 
-    describe("Receiver", () => {
+    describe("Moderator", () => {
         it("Should also return a promise", (done) => {
             modClient.disconnect().then(() => done());
         });

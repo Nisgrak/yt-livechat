@@ -21,7 +21,7 @@ export class LiveChat extends EventEmitter {
      * Set config, create oauth client.
      * @param {Config} config Class config
      */
-    constructor(public config: Config) {
+    public constructor(public config: Config) {
         super();
         this.auth = this.login();
     }

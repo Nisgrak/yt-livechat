@@ -1,0 +1,12 @@
+{
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "tslint.enable": true,
+    "files.exclude": {
+        "**/build": true,
+        "**/.vscode": true,
+        "**/pnpm-debug.log": true,
+        "**/shrinkwrap.yaml": true,
+        "**/LICENSE": true,
+        "**/.gitattributes": true
+    }
+}
