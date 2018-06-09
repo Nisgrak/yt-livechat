@@ -3,66 +3,100 @@ import { Credentials } from "google-auth-library/build/src/auth/credentials";
 import { OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
 import { Config, LiveChatMessage } from "./types";
 
-export class LiveChat extends EventEmitter {
-    /**
-     * Equals true if the client is polling messages.
-     */
-    public connected: boolean = false;
+interface PollResp {
+    data: {
+        items: LiveChatMessage[];
+    };
+    pollingIntervalMillis: number;
+    nextPageToken: string;
+}
 
+export class LiveChat extends EventEmitter {
     /**
      * OAuth2 client used to do authenticated requests.
      */
     public auth: OAuth2Client;
-    private pollTimeout: any;
-    private pageToken: string = "";
+    /**
+     * Config of the lib
+     */
+    public config: Config;
+    /**
+     * Equals true if the client is polling messages.
+     */
+    public connected: boolean = false;
     private knownMsgs: string[] = [];
+    private pageToken: string | undefined = "";
+    private pollTimeout: number;
 
     /**
      * Set config, create oauth client.
-     * @param {Config} config Class config
+     * @param config Config of the lib
      */
-    public constructor(public config: Config) {
+    public constructor(config: Config) {
         super();
+        this.config = config;
         this.auth = this.login();
+    }
+
+    /**
+     * Create the oauth client
+     */
+    private login(): OAuth2Client {
+        const {
+            access_token,
+            client_id,
+            client_secret,
+            refresh_token,
+            expiry_date,
+        } = this.config.oauth;
+
+        const auth: OAuth2Client = new OAuth2Client(client_id, client_secret);
+        auth.setCredentials({ access_token, refresh_token, expiry_date });
+        auth.on("tokens", (tokens: Credentials) => this.emit("tokens", tokens));
+
+        return auth;
     }
 
     /**
      * Start polling messages from the chat
      */
-    public async connect() {
+    public async connect(): Promise<this> {
         this.connected = true;
         this.emit("connected");
         this.poll();
+
         return this;
     }
 
     /**
      * Stop polling messages from the chat
      */
-    public async disconnect() {
+    public async disconnect(): Promise<this> {
         clearTimeout(this.pollTimeout);
         this.connected = false;
         this.emit("disconnected");
+
         return this;
     }
 
     /**
      * Recreate the oauth client, disconnect and reconnect to the chat.
      */
-    public async reconnect() {
+    public async reconnect(): Promise<this> {
         this.auth = this.login();
         await this.disconnect();
         await this.connect();
         this.emit("reconnected");
+
         return this;
     }
 
     /**
      * Send a message
-     * @param {string} message Message content
+     * @param message Message content
      */
     public say(message: string): Promise<LiveChatMessage> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve: (value: LiveChatMessage) => void, reject: (value: Error) => void): void => {
             this.auth.request({
                 data: {
                     snippet: {
@@ -78,12 +112,15 @@ export class LiveChat extends EventEmitter {
                     part: "snippet",
                 },
                 url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-            }, (err: any, res: any) => {
-                if (err) {
+            }, (err: Error | null, res: { data: LiveChatMessage } | undefined | null) => {
+                if (res && res.data) {
+                    resolve(res.data);
+                } else if (err) {
                     this.error(err);
-                    return reject(err);
+                    reject(err);
+                } else {
+                    reject(new Error("Unknown error."));
                 }
-                resolve(res.data);
             });
         });
     }
@@ -92,46 +129,29 @@ export class LiveChat extends EventEmitter {
      * Delete a message
      * @param messageId ID of the message
      */
-    public delete(messageId: string) {
-        return new Promise((resolve, reject) => {
+    public delete(messageId: string): Promise<this> {
+        return new Promise((resolve: (value: this) => void, reject: (value: Error) => void): void => {
             this.auth.request({
                 method: "DELETE",
                 params: {
                     id: messageId,
                 },
                 url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-            }, (err: any) => {
-                if (err) {
+            }, (err: Error | null) => {
+                if (!err) {
+                    resolve(this);
+                } else {
                     this.error(err);
-                    return reject(err);
+                    reject(err);
                 }
-                resolve();
             });
         });
     }
 
     /**
-     * Create the oauth client
-     */
-    private login() {
-        const {
-            access_token,
-            client_id,
-            client_secret,
-            refresh_token,
-            expiry_date,
-        } = this.config.oauth;
-
-        const auth = new OAuth2Client(client_id, client_secret);
-        auth.setCredentials({ access_token, refresh_token, expiry_date });
-        auth.on("tokens", (tokens: Credentials) => this.emit("tokens", tokens));
-        return auth;
-    }
-
-    /**
      * Poll messages
      */
-    private async poll() {
+    private async poll(): Promise<void> {
         this.emit("polling");
 
         this.auth.request({
@@ -143,12 +163,9 @@ export class LiveChat extends EventEmitter {
                 part: "snippet, authorDetails",
             },
             url: "https://www.googleapis.com/youtube/v3/liveChat/messages",
-        }, (err: any, res: any) => {
-            if (err) {
-                this.error(err);
-                return this.parse(undefined);
-            }
-            this.parse(res);
+        }, (err: Error | null, res: {} | PollResp | undefined | null) => {
+            if (err) { this.error(err); }
+            this.parse(res as PollResp | undefined | null);
         });
     }
 
@@ -156,10 +173,10 @@ export class LiveChat extends EventEmitter {
      * Parse messages from the poll
      * @param resp Response of the poll request
      */
-    private parse(resp: any): this {
+    private parse(resp: PollResp | null | undefined): this {
         if (resp && resp.data && resp.data.items) {
             if (this.knownMsgs.length > 0) {
-                resp.data.items.forEach((item: any) => {
+                resp.data.items.forEach((item: LiveChatMessage) => {
                     if (this.knownMsgs.indexOf(item.id) === -1 && item.snippet.type === "textMessageEvent") {
                         this.knownMsgs.push(item.id);
                         this.emit("chat", item);
@@ -170,8 +187,8 @@ export class LiveChat extends EventEmitter {
             }
         }
 
-        const interval = !resp ? 10000 : Math.max(this.config.interval || 1, resp.pollingIntervalMillis);
-        const pageToken = !resp ? undefined : resp.nextPageToken;
+        const interval: number = !resp ? 10000 : Math.max(this.config.interval || 1, resp.pollingIntervalMillis);
+        const pageToken: string | undefined = !resp ? undefined : resp.nextPageToken;
         if (this.pageToken !== pageToken) {
             this.pageToken = pageToken;
         }
@@ -180,32 +197,14 @@ export class LiveChat extends EventEmitter {
         return this;
     }
 
+    // TODO: Better error handler
+
     /**
      * Parse errors
      * @param err Error from any requests
      */
-    private error(err: any): this {
-        if (!err.errors || !err.errors || !err.errors[0]) {
-            this.emit("error", err);
-            return this;
-        }
-        const reason = err.errors[0].reason;
-
-        switch (reason) {
-            case "authError":
-                this.refreshAuth();
-                break;
-            default:
-                this.emit("error", err);
-        }
-        return this;
-    }
-
-    /**
-     * Refresh OAuth tokens
-     */
-    private refreshAuth(): this {
-        this.auth.refreshAccessToken();
+    private error(err: any): this { // tslint:disable-line:no-any
+        this.emit("error", err);
         return this;
     }
 }
