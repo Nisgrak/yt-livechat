@@ -1,4 +1,4 @@
-# YT-Livechat [![Build Status](https://travis-ci.com/siffreinsg/yt-livechat.svg?branch=master)](https://travis-ci.com/siffreinsg/yt-livechat)[![Greenkeeper badge](https://badges.greenkeeper.io/siffreinsg/yt-livechat.svg)](https://greenkeeper.io/)
+# YT-Livechat [![Build Status](https://travis-ci.com/siffreinsg/yt-livechat.svg?branch=master)](https://travis-ci.com/siffreinsg/yt-livechat)
 
 [![NPM](https://nodei.co/npm/yt-livechat.png)](https://nodei.co/npm/yt-livechat/)
 
