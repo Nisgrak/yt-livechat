@@ -1,2 +1,2 @@
-export * from "./livechat";
+export * from "./LiveChat";
 export * from "./types";
